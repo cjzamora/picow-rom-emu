@@ -12,7 +12,7 @@ This is a simple ROM emulator for the 6502 microprocessor using the Raspberry PI
 ## GPIO Assignments
 
 - PIN 0-15: Address Bus (A0-A15)
-- PIN 16-22, 26: Data Bus (D0-D7)
+- PIN 16-22, 26: Data Bus (D7-D0)
 - PIN 27: Read/Write (R/W)
 - PIN 28: Clock (From the clock/timer)
 
