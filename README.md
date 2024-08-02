@@ -8,6 +8,8 @@ This is a simple ROM emulator for the 6502 microprocessor using the Raspberry PI
 - CMake
 - Python
 - Raspberry PI Pico SDK
+- VASM Old-style assembler [Download Here](http://www.compilers.de/vasm.html)
+- XXD (For converting binary to C header file)
 
 ## GPIO Assignments
 
@@ -16,10 +18,15 @@ This is a simple ROM emulator for the 6502 microprocessor using the Raspberry PI
 - PIN 27: Read/Write (R/W)
 - PIN 28: Clock (From the clock/timer)
 
-## About makerom.py
-The makerom.py script is used to generate the ROM binary file and then converted to a C header file so that the ROM data can be included in the source code. This is not the most efficient way to do this but for testing purposes, it is good enough. You can modify the code part of the script depending on your 6502 instructions.
+## Generating the ROM
 
-The process of generating the ROM can also be changed by writting an actual 6502 assembly code then compiling it into machine code, then converting it into a C header file so that you don't have to put the instruction hex codes manually on the makerom.py script.
+### Using the `makerom.py` script
+There are two ways to generate a ROM one is using the `makerom.py` this generates a test ROM file with a simple instructions. The instructions
+are coded directly on the script under the `code` variable and it contains the hex equivalent of the instructions.
+
+### Using the `vasm` assembler `makerom_asm.sh`
+The second way is to use the `vasm` assembler to generate the ROM. The `makerom_asm.sh` script assembles the `src/rom.s` file and generates a binary file.
+The binary file is then converted to a C header file using the `xxd` command. When customizing the `src/rom.s` file make sure to add the `.section code, "rx"` directive to the start of the file to make sure that the code is placed in the correct section of the binary file.
 
 ## Building and Flashing
 ```bash

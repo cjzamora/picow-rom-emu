@@ -1,8 +1,3 @@
-# generate rom files
-echo "Generating ROM files..."
-python makerom.py
-xxd -i -n rom_bin bin/rom.bin src/rom_bin.h
-
 # success flag
 SUCCESS=0
 # if build directory does not exists, create it
