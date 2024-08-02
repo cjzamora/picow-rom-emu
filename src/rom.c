@@ -60,6 +60,7 @@ char *rom_read_address_bin()
     for (int i = 17; i >= 0; i--) {
         address[i] = gpio_get(ADDRESS_PINS[i]) ? '1' : '0';
     }
+    
     address[16] = '\0';
 
     return address;
@@ -72,17 +73,18 @@ char *rom_read_address_bin()
  */
 char *rom_read_data_bin()
 {
+    // set direction to input mode
+    rom_data_dir_in(false);
+
     static char data[9];
     for (int i = 0; i < 8; i++) {
-        // switch data pins to input mode
-        gpio_set_dir(DATA_PINS[i], GPIO_IN);
-
         data[i] = gpio_get(DATA_PINS[i]) ? '1' : '0';
-
-        // switch data pins to input mode
-        gpio_set_dir(DATA_PINS[i], GPIO_OUT);
     }
+    
     data[8] = '\0';
+
+    // set direction to output mode
+    rom_data_dir_out();
 
     return data;
 }
