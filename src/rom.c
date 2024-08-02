@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "rom.h"
 
 // define address pins
 // A0 - PIO 0 (MSB) - A15 - PIO 15 (LSB)
@@ -33,17 +34,17 @@ u_int16_t rom_read_address()
  */
 u_int8_t rom_read_data() 
 {
+    // set direction to input mode
+    rom_data_dir_in(false);
+
     u_int8_t data = 0;
     for (int i = 0; i < 8; i++) {
-        // switch data pins to input mode
-        gpio_set_dir(DATA_PINS[i], GPIO_IN);
-
         int bit = gpio_get(DATA_PINS[i]) ? 1 : 0;
         data = (data << 1) + bit;
-
-        // switch data pins back to output mode
-        gpio_set_dir(DATA_PINS[i], GPIO_OUT);
     }
+
+    // set direction to output mode
+    rom_data_dir_out();
 
     return data;
 }
@@ -129,11 +130,16 @@ void rom_data_dir_out()
 /**
  * Set data pins to input mode
  * 
+ * @param bool clr_pins
  * @return void
  */
-void rom_data_dir_in()
+void rom_data_dir_in(bool clr_pins)
 {
     for (int i = 0; i < 8; i++) {
+        if (clr_pins) {
+            gpio_put(DATA_PINS[i], 0);
+        }
+
         gpio_set_dir(DATA_PINS[i], GPIO_IN);
     }
 }

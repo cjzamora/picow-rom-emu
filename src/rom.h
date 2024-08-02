@@ -53,9 +53,10 @@ void rom_data_dir_out();
 /**
  * Set data pins to input mode
  * 
+ * @param bool clr_pins
  * @return void
  */
-void rom_data_dir_in();
+void rom_data_dir_in(bool clr_pins);
 
 /**
  * Rom init function
