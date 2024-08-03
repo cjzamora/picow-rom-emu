@@ -18,16 +18,18 @@ u_int8_t rom_read_data();
 /**
  * Read address from address pins in binary
  * 
+ * @param u_int16_t address
  * @return char *
  */
-char *rom_read_address_bin();
+char *rom_read_address_bin(u_int16_t address);
 
 /**
  * Read data from rom in binary
  * 
+ * @param u_int8_t data
  * @return char *
  */
-char *rom_read_data_bin();
+char *rom_read_data_bin(u_int8_t data);
 
 /**
  * Read data from data pins

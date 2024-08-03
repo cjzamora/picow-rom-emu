@@ -20,7 +20,7 @@ This is a simple ROM emulator for the 6502 microprocessor using the Raspberry PI
 
 ## Generating the ROM
 
-### Using the `makerom.py` script
+### Using the `makerom_py.sh` script
 There are two ways to generate a ROM one is using the `makerom.py` this generates a test ROM file with a simple instructions. The instructions
 are coded directly on the script under the `code` variable and it contains the hex equivalent of the instructions.
 
@@ -30,7 +30,7 @@ The binary file is then converted to a C header file using the `xxd` command. Wh
 
 ## Building and Flashing
 ```bash
-./upload.sh
+[makerom_py.sh | makerom_asm.sh] && ./upload.sh
 ```
 
 Make sure that the Pico is in BOOTSEL mode before running the script.

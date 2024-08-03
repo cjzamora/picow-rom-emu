@@ -34,17 +34,11 @@ u_int16_t rom_read_address()
  */
 u_int8_t rom_read_data() 
 {
-    // set direction to input mode
-    rom_data_dir_in(false);
-
     u_int8_t data = 0;
     for (int i = 0; i < 8; i++) {
         int bit = gpio_get(DATA_PINS[i]) ? 1 : 0;
         data = (data << 1) + bit;
     }
-
-    // set direction to output mode
-    rom_data_dir_out();
 
     return data;
 }
@@ -52,41 +46,39 @@ u_int8_t rom_read_data()
 /**
  * Read address sending by 6502 in binary
  * 
+ * @param u_int16_t address
  * @return char *
  */
-char *rom_read_address_bin() 
+char *rom_read_address_bin(u_int16_t address) 
 {
-    static char address[17];
-    for (int i = 17; i >= 0; i--) {
-        address[i] = gpio_get(ADDRESS_PINS[i]) ? '1' : '0';
+    // convert address to binary
+    static char bin[17];
+    for (int i = 0; i < 16; i++) {
+        bin[i] = (address >> (15 - i)) & 1 ? '1' : '0';
     }
-    
-    address[16] = '\0';
 
-    return address;
+    bin[16] = '\0';
+
+    return bin;
 }
 
 /**
  * Read data from rom in binary
  * 
+ * @param u_int8_t data
  * @return char *
  */
-char *rom_read_data_bin()
+char *rom_read_data_bin(u_int8_t data)
 {
-    // set direction to input mode
-    rom_data_dir_in(false);
-
-    static char data[9];
+    // convert data to binary
+    static char bin[9];
     for (int i = 0; i < 8; i++) {
-        data[i] = gpio_get(DATA_PINS[i]) ? '1' : '0';
+        bin[i] = (data >> (7 - i)) & 1 ? '1' : '0';
     }
-    
-    data[8] = '\0';
 
-    // set direction to output mode
-    rom_data_dir_out();
+    bin[8] = '\0';
 
-    return data;
+    return bin;
 }
 
 /**

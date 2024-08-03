@@ -16,27 +16,33 @@ const int CLOCK_PIN = 28;
  */
 void handle_interrupt(uint gpio, uint32_t events) 
 {
-    if (gpio == CLOCK_PIN && events == GPIO_IRQ_EDGE_RISE) {
-        // read address and data from 6502
-        u_int16_t address = rom_read_address();
+    // read address and data from 6502
+    u_int16_t address = rom_read_address();
+    // determine if 6502 is reading or writting
+    char mode = rom_is_read_req() ? 'r' : 'W';
+
+    // if 6502 is writting, set the data pins to high impedance
+    // or low to prevent the 6502 from reading the data bus
+    if (mode == 'W') {
+        rom_data_dir_in(true);
+    } else {
+        rom_data_dir_out();
+
+        // read data from rom
+        u_int8_t data = rom_bin[address];
+        // write data to 6502
+        rom_write_data(data);
+    }
+
+    // DEBUG: print address, data, and mode
+    if (events == GPIO_IRQ_EDGE_RISE) {
         // if 6502 is reading, read data from rom
         u_int8_t data = rom_read_data();
 
         // read address and data in binary
-        char *address_bin = rom_read_address_bin();
+        char *address_bin = rom_read_address_bin(address);
         // read data in binary
-        char *data_bin = rom_read_data_bin();
-
-        // determine if 6502 is reading or writting
-        char mode = rom_is_read_req() ? 'r' : 'W';
-
-        // if 6502 is writting, set the data pins to high impedance
-        // or low to prevent the 6502 from reading the data bus
-        if (mode == 'W') {
-            rom_data_dir_in(true);
-        } else {
-            rom_data_dir_out();
-        }
+        char *data_bin = rom_read_data_bin(data);
 
         // DEBUG: print address, data, and mode
         printf("%s    %s    %04x   %c   %02x\n", address_bin, data_bin, address, mode, data);
@@ -65,17 +71,6 @@ int main()
     rom_init();
 
     while(true) {
-        // read address from 6502
-        u_int16_t address = rom_read_address();
-
-        // if 6502 is reading, read data from rom
-        if (rom_is_read_req()) {
-            // read data from rom
-            u_int8_t data = rom_bin[address];
-            // write data to 6502
-            rom_write_data(data);
-            // wait for 1 microsecond
-            sleep_us(1);
-        }
+        tight_loop_contents();
     }
 }
