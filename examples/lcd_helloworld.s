@@ -20,15 +20,15 @@ RS = %00100000
     .org $8000
 
 reset:
-    ; Set all bits of DDRB to output 1111 1111 (LSB->MSB)
+    ; Set all bits of DDRB to output 1111 1111 (MSB->LSB)
     lda #%11111111
     sta DDRB
-    ; Set the top 3 bits of DDRA to output 1110 0000
+    ; Set the top 3 bits of DDRA to output 1110 0000  (MSB->LSB) (P7-P5)
     lda #%11100000
     sta DDRA
 
-    ; Set 8-bit mode 2-line display
-    lda #%00111000
+    ; Set 8-bit mode 2-line display (MSB->LSB)
+    lda #%00111000 
     jsr lcd_instruction
     ; Set display on, cursor off, blink on
     lda #%00001110
