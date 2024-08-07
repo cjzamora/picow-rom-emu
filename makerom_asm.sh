@@ -1,3 +1,8 @@
+# if bin directory does not exist, create it
+if [ ! -d "bin" ]; then
+  mkdir bin
+fi
+
 # generate rom using vasm old style
 # make sure to add .section code, "rx" at the beginning of the
 # assembly file to automatically place the code in the correct

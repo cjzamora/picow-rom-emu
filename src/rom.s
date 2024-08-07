@@ -1,5 +1,5 @@
- .section code, "rx"
- .org $8000
+    .section code, "rx"
+    .org $8000
 
 reset:
     lda #$ff    
@@ -14,6 +14,6 @@ loop:
 
     jmp loop
 
- .org    $fffc
- .word   reset
- .word   $0000
+    .org    $fffc
+    .word   reset
+    .word   $0000
