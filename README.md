@@ -26,13 +26,16 @@ The entire 6502 build and examples is inspired by [Ben Eater's 6502 computer bui
 There are two ways to generate a ROM one is using the `makerom.py` this generates a test ROM file with a simple instructions. The instructions
 are coded directly on the script under the `code` variable and it contains the hex equivalent of the instructions.
 
-### Using the `vasm` assembler `makerom_asm.sh`
-The second way is to use the `vasm` assembler to generate the ROM. The `makerom_asm.sh` script assembles the `src/rom.s` file and generates a binary file.
-The binary file is then converted to a C header file using the `xxd` command. When customizing the `src/rom.s` file make sure to add the `.section code, "rx"` directive to the start of the file to make sure that the code is placed in the correct section of the binary file.
+### Using the `vasm` assembler `makerom_asm.sh <assembly_file>`
+The second way is to use the `vasm` assembler to generate the ROM. The `makerom_asm.sh` script assembles the given assembly file and generates a binary file.
+The binary file is then converted to a C header file using the `xxd` command. Make sure to add the `.section code, "rx"` directive to the start of your assembly files to make sure that the code is placed in the correct section of the binary file.
 
 ## Building and Flashing
 ```bash
-[makerom_py.sh | makerom_asm.sh] && ./upload.sh
+[makerom_py.sh | makerom_asm.sh <assembly_file>] && ./upload.sh
 ```
 
 Make sure that the Pico is in BOOTSEL mode before running the script.
+
+## Working with RAM (6502 Stack)
+To avoid conflicts with an external RAM a `ROM_STACK_START=0x0000` and `ROM_STACK_END=0x07FF` is defined in the `CMakeLists.txt` file. The ROM will set the data pins to high impedance when the address is within this stack range to avoid bus contention.

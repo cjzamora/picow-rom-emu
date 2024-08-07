@@ -20,10 +20,14 @@ void handle_interrupt(uint gpio, uint32_t events)
     u_int16_t address = rom_read_address();
     // determine if 6502 is reading or writting
     char mode = rom_is_read_req() ? 'r' : 'W';
+    // avoid conflicts with RAM check if address is within the stack range
+    bool is_stack = address >= ROM_STACK_START && address <= ROM_STACK_END;
 
-    // if 6502 is writting, set the data pins to high impedance
-    // or low to prevent the 6502 from reading the data bus
-    if (mode == 'W') {
+    // - if 6502 is writting, set the data pins to high impedance
+    //   to prevent pico and 6502 to write data at the same time (Bus Contention).
+    // - if if address is within the stack range, set the data pins 
+    //   to high impedance to avoid pico and RAM to write data at the same time.
+    if (mode == 'W' || is_stack) {
         rom_data_dir_in(true);
     } else {
         rom_data_dir_out();
@@ -38,14 +42,16 @@ void handle_interrupt(uint gpio, uint32_t events)
     if (events == GPIO_IRQ_EDGE_RISE) {
         // if 6502 is reading, read data from rom
         u_int8_t data = rom_read_data();
-
+        
         // read address and data in binary
         char *address_bin = rom_read_address_bin(address);
         // read data in binary
         char *data_bin = rom_read_data_bin(data);
+        // identify storage
+        char *storage = is_stack ? "stack" : "rom";
 
         // DEBUG: print address, data, and mode
-        printf("%s    %s    %04x   %c   %02x\n", address_bin, data_bin, address, mode, data);
+        printf("%s    %s    %04x   %c   %02x    %s\n", address_bin, data_bin, address, mode, data, storage);
     }
 }
 

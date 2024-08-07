@@ -77,6 +77,9 @@ reset:
     lda #"!"
     jsr print_char
 
+loop:
+    jmp reset
+
 lcd_instruction:
     sta PORTB
     
@@ -89,7 +92,6 @@ lcd_instruction:
     ; Clear RS/RW/E bits
     lda #0
     sta PORTA
-
     ; Return to subroutine
     rts
 
@@ -99,18 +101,14 @@ print_char:
     ; Clear RS/RW/E bits
     lda #RS
     sta PORTA
-    ; Toggle E bit
-    lda #(E | RS)
+    ; Toggle RS | E bit
+    lda #(RS | E)
     sta PORTA
     ; Clear RS/RW/E bits
     lda #RS
     sta PORTA
-
     ; Return to subroutine
     rts
-
-loop:
-    jmp reset
 
     .org    $fffc
     .word   reset
