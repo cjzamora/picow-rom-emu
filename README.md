@@ -37,5 +37,5 @@ The binary file is then converted to a C header file using the `xxd` command. Ma
 
 Make sure that the Pico is in BOOTSEL mode before running the script.
 
-## Working with RAM (6502 Stack)
+## Working with RAM (6502 Stack R/W)
 To avoid conflicts with an external RAM a `ROM_STACK_START=0x0000` and `ROM_STACK_END=0x07FF` is defined in the `CMakeLists.txt` file. The ROM will set the data pins to high impedance when the address is within this stack range to avoid bus contention.
