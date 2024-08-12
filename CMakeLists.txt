@@ -25,6 +25,7 @@ add_executable(${PROJECT}
 add_compile_definitions(
     ROM_STACK_START=0x0000
     ROM_STACK_END=0x07FF
+    ROM_DEBUG=1
 )
 
 # add target link libraries

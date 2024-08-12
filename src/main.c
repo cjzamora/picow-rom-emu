@@ -1,6 +1,5 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
-#include "hardware/timer.h"
 #include "rom.h"
 #include "rom_bin.h"
 
@@ -39,7 +38,7 @@ void handle_interrupt(uint gpio, uint32_t events)
     }
 
     // DEBUG: print address, data, and mode
-    if (events == GPIO_IRQ_EDGE_RISE) {
+    if (events == GPIO_IRQ_EDGE_RISE && ROM_DEBUG) {
         // if 6502 is reading, read data from rom
         u_int8_t data = rom_read_data();
         
