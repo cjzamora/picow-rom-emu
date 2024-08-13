@@ -40,47 +40,47 @@ reset:
     lda #%00000001
     jsr lcd_instruction
 
-    ; Print "HELLO WORLD!"
-    lda #"H"
-    jsr print_char
-    
-    lda #"E"
-    jsr print_char
+    ; Load index 0 of message into x
+    ldx #0
 
-    lda #"L"
+print:
+    ; Load the character at index x of message into A
+    lda message, x
+    ; If the character is null go to reset
+    beq reset
+    ; Print the character
     jsr print_char
+    ; Increment x
+    inx
+    ; Jump back to print
+    jmp print
 
-    lda #"L"
-    jsr print_char
+message: .asciiz "Hello, World!"
 
-    lda #"O"
-    jsr print_char
+lcd_wait:
+    pha
+    ; Set PORTB to input
+    lda #%00000000
+    sta DDRB
 
-    lda #" "
-    jsr print_char
+lcd_busy:
+    lda #RW
+    sta PORTA
+    lda #(RW | E)
+    sta PORTA
+    lda PORTB
+    and #%10000000
+    bne lcd_busy
 
-    lda #"W"
-    jsr print_char
-
-    lda #"O"
-    jsr print_char
-
-    lda #"R"
-    jsr print_char
-
-    lda #"L"
-    jsr print_char
-
-    lda #"D"
-    jsr print_char
-
-    lda #"!"
-    jsr print_char
-
-loop:
-    jmp reset
+    ; Set PORTB to output
+    lda #%11111111
+    sta DDRB
+    pla
+    rts
 
 lcd_instruction:
+    jsr lcd_wait
+
     sta PORTB
     
     ; Clear RS/RW/E bits
@@ -96,6 +96,8 @@ lcd_instruction:
     rts
 
 print_char:
+    jsr lcd_wait
+
     sta PORTB
     
     ; Clear RS/RW/E bits

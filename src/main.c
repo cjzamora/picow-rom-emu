@@ -27,7 +27,7 @@ void handle_interrupt(uint gpio, uint32_t events)
     // - if if address is within the stack range, set the data pins 
     //   to high impedance to avoid pico and RAM to write data at the same time.
     if (mode == 'W' || is_stack) {
-        rom_data_dir_in(true);
+        rom_data_dir_in(false);
     } else {
         rom_data_dir_out();
 
@@ -37,7 +37,7 @@ void handle_interrupt(uint gpio, uint32_t events)
         rom_write_data(data);
     }
 
-    // DEBUG: print address, data, and mode
+    // DEBUG: print address, data, and mode (only enable this for frequencies <= 1khz)
     if (events == GPIO_IRQ_EDGE_RISE && ROM_DEBUG) {
         // if 6502 is reading, read data from rom
         u_int8_t data = rom_read_data();
