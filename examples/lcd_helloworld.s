@@ -111,7 +111,7 @@ print_char:
     sta PORTA
     ; Return to subroutine
     rts
-
+    
     .org    $fffc
     .word   reset
     .word   $0000

@@ -35,6 +35,9 @@ target_link_libraries(
     pico_cyw43_arch_none
 )
 
+# add compile options
+target_compile_options(${PROJECT} PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -Wno-unused-variable)
+
 # create map/bin/hex file etc.
 pico_add_extra_outputs(${PROJECT})
 # enable USB output

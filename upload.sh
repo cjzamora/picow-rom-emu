@@ -11,7 +11,6 @@ fi
 # find the .uf2 file
 UF2=$(find . -name "*.uf2")
 VOL=/Volumes/RPI-RP2
-PORT=/dev/cu.usbmodem141101
 
 echo " "
 
@@ -20,12 +19,6 @@ if [ $SUCCESS -eq 0 ]; then
   echo "Build failed!"
   exit 1
 fi
-
-# reboot if serial port exists
-# if [ -e $PORT ]; then
-#   echo "Rebooting RP2040..."
-#   echo "bsel" > $PORT && sleep 5
-# fi
 
 UPLOADED=0
 echo "Uploading $UF2 to $VOL..."

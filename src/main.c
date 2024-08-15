@@ -6,6 +6,11 @@
 // define clock pin
 const int CLOCK_PIN = 28;
 
+// define rom stack start
+const u_int16_t STACK_START = ROM_STACK_START;
+// define rom stack end
+const u_int16_t STACK_END = ROM_STACK_END;
+
 /**
  * Handle interrupt
  * 
@@ -20,7 +25,7 @@ void handle_interrupt(uint gpio, uint32_t events)
     // determine if 6502 is reading or writting
     char mode = rom_is_read_req() ? 'r' : 'W';
     // avoid conflicts with RAM check if address is within the stack range
-    bool is_stack = address >= ROM_STACK_START && address <= ROM_STACK_END;
+    bool is_stack = address >= STACK_START && address <= STACK_END;
 
     // - if 6502 is writting, set the data pins to high impedance
     //   to prevent pico and 6502 to write data at the same time (Bus Contention).
