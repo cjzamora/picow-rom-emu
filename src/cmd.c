@@ -4,6 +4,7 @@
 #include "pico/bootrom.h"
 #include "pico/stdlib.h"
 #include "cmd.h"
+#include "rom.h"
 
 /**
  * Command repeating timer
@@ -50,7 +51,20 @@ void cmd_boot_message()
  */
 void cmd_info()
 {
-    
+    u_int16_t stack_start = rom_get_stack_start();
+    u_int16_t stack_end = rom_get_stack_end();
+    u_int32_t rom_len = rom_get_len();
+
+    printf(
+        "Stack start: 0x%04X\n"
+        "Stack end: 0x%04X\n"
+        "ROM size: %lu bytes\n\n",
+        stack_start,
+        stack_end,
+        rom_len
+    );
+
+    printf("\n");
 }
 
 /**

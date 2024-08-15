@@ -58,6 +58,36 @@ const u_int16_t STACK_START = ROM_STACK_START;
 const u_int16_t STACK_END = ROM_STACK_END;
 
 /**
+ * Rom stack start address
+ * 
+ * @return u_int16_t
+ */
+u_int16_t rom_get_stack_start()
+{
+    return STACK_START;
+}
+
+/**
+ * Rom stack end address
+ * 
+ * @return u_int16_t
+ */
+u_int16_t rom_get_stack_end()
+{
+    return STACK_END;
+}
+
+/**
+ * Rom data length in bytes
+ * 
+ * @return u_int32_t
+ */
+u_int32_t rom_get_len()
+{
+    return __rom___len;
+}
+
+/**
  * Read address sending by 6502 from address pins
  * 
  * @return u_int16_t

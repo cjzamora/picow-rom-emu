@@ -2,6 +2,27 @@
 #define ROM_H
 
 /**
+ * Rom stack start address
+ * 
+ * @return u_int16_t
+ */
+u_int16_t rom_get_stack_start();
+
+/**
+ * Rom stack end address
+ * 
+ * @return u_int16_t
+ */
+u_int16_t rom_get_stack_end();
+
+/**
+ * Rom data length in bytes
+ * 
+ * @return u_int32_t
+ */
+u_int32_t rom_get_len();
+
+/**
  * Read address from address pins
  * 
  * @return u_int16_t
