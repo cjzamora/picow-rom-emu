@@ -1,15 +1,61 @@
 #include <stdio.h>
 #include "pico/stdlib.h"
+#include "bin.h"
 #include "rom.h"
 
-// define address pins
-// A0 - PIO 0 (MSB) - A15 - PIO 15 (LSB)
+/**
+ * Clock pin
+ * 
+ * @var int
+ */
+const int CLOCK_PIN = 28;
+
+/**
+ * Address pins
+ * 
+ * A0 - PIO 0 (MSB) - A15 - PIO 15 (LSB)
+ * 
+ * @var int[]
+ */
 const int ADDRESS_PINS[] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15 };
-// define data pins
-// D0 - PIO 16 (MSB) - D7 - PIO 26 (LSB)
+
+/**
+ * Data pins
+ * 
+ * D0 - PIO 16 (MSB) - D7 - PIO 26 (LSB)
+ * 
+ * @var int[]
+ */
 const int DATA_PINS[] = { 16, 17, 18, 19, 20, 21, 22, 26 };
-// define read write pin
+
+/**
+ * Read write pin
+ * 
+ * @var int
+ */
 const int READ_WRITE_PIN = 27;
+
+#ifndef ROM_STACK_START
+#define ROM_STACK_START 0x0000
+#endif
+
+#ifndef ROM_STACK_END
+#define ROM_STACK_END 0x07FF
+#endif
+
+/**
+ * Rom stack start
+ * 
+ * @var u_int16_t
+ */
+const u_int16_t STACK_START = ROM_STACK_START;
+
+/**
+ * Rom stack end
+ * 
+ * @var u_int16_t
+ */
+const u_int16_t STACK_END = ROM_STACK_END;
 
 /**
  * Read address sending by 6502 from address pins
@@ -139,12 +185,52 @@ void rom_data_dir_in(bool clr_pins)
 }
 
 /**
+ * Rom clock interrupt handler
+ * 
+ * @param uint gpio
+ * @param uint32_t events
+ * @return void
+ */
+void rom_clock_irq(uint gpio, uint32_t events) 
+{
+    // read address and data from 6502
+    u_int16_t address = rom_read_address();
+    // determine if 6502 is reading or writting
+    char mode = rom_is_read_req() ? 'r' : 'W';
+    // avoid conflicts with RAM check if address is within the stack range
+    bool is_stack = address >= STACK_START && address <= STACK_END;
+
+    // - if 6502 is writting, set the data pins to high impedance
+    //   to prevent pico and 6502 to write data at the same time (Bus Contention).
+    // - if if address is within the stack range, set the data pins 
+    //   to high impedance to avoid pico and RAM to write data at the same time.
+    if (mode == 'W' || is_stack) {
+        rom_data_dir_in(false);
+    } else {
+        rom_data_dir_out();
+
+        // read data from rom
+        u_int8_t data = __rom__[address];
+        // write data to 6502
+        rom_write_data(data);
+    }
+}
+
+
+/**
  * Initialize rom
  * 
  * @return void
  */
 void rom_init() 
 {
+    // initialize clock pin
+    gpio_init(CLOCK_PIN);
+    // set clock pin to input mode
+    gpio_set_dir(CLOCK_PIN, GPIO_IN);
+    // add clock interrupt
+    gpio_set_irq_enabled_with_callback(CLOCK_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &rom_clock_irq);
+
     // initialize address pins
     for (int i = 0; i < 16; i++) {
         gpio_init(ADDRESS_PINS[i]);

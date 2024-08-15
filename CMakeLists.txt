@@ -17,8 +17,9 @@ pico_sdk_init()
 # add the executable
 add_executable(${PROJECT} 
     src/main.c
+    src/bin.h
+    src/cmd.c
     src/rom.c
-    src/rom_bin.h
 )
 
 # add compile definitions

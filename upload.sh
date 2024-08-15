@@ -20,6 +20,13 @@ if [ $SUCCESS -eq 0 ]; then
   exit 1
 fi
 
+# if serial port is specified and it exists
+if [ -n "$1" ] && [ -e $1 ]; then
+  echo "Rebooting..."
+  echo "reboot\n" > $1
+  sleep 5
+fi
+
 UPLOADED=0
 echo "Uploading $UF2 to $VOL..."
 rsync $UF2 $VOL && UPLOADED=1

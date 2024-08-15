@@ -1,63 +1,7 @@
 #include "pico/stdlib.h"
 #include "pico/cyw43_arch.h"
+#include "cmd.h"
 #include "rom.h"
-#include "rom_bin.h"
-
-// define clock pin
-const int CLOCK_PIN = 28;
-
-// define rom stack start
-const u_int16_t STACK_START = ROM_STACK_START;
-// define rom stack end
-const u_int16_t STACK_END = ROM_STACK_END;
-
-/**
- * Handle interrupt
- * 
- * @param uint gpio
- * @param uint32_t events
- * @return void
- */
-void handle_interrupt(uint gpio, uint32_t events) 
-{
-    // read address and data from 6502
-    u_int16_t address = rom_read_address();
-    // determine if 6502 is reading or writting
-    char mode = rom_is_read_req() ? 'r' : 'W';
-    // avoid conflicts with RAM check if address is within the stack range
-    bool is_stack = address >= STACK_START && address <= STACK_END;
-
-    // - if 6502 is writting, set the data pins to high impedance
-    //   to prevent pico and 6502 to write data at the same time (Bus Contention).
-    // - if if address is within the stack range, set the data pins 
-    //   to high impedance to avoid pico and RAM to write data at the same time.
-    if (mode == 'W' || is_stack) {
-        rom_data_dir_in(false);
-    } else {
-        rom_data_dir_out();
-
-        // read data from rom
-        u_int8_t data = rom_bin[address];
-        // write data to 6502
-        rom_write_data(data);
-    }
-
-    // DEBUG: print address, data, and mode (only enable this for frequencies <= 1khz)
-    if (events == GPIO_IRQ_EDGE_RISE && ROM_DEBUG) {
-        // if 6502 is reading, read data from rom
-        u_int8_t data = rom_read_data();
-        
-        // read address and data in binary
-        char *address_bin = rom_read_address_bin(address);
-        // read data in binary
-        char *data_bin = rom_read_data_bin(data);
-        // identify storage
-        char *storage = is_stack ? "stack" : "rom";
-
-        // DEBUG: print address, data, and mode
-        printf("%s    %s    %04x   %c   %02x    %s\n", address_bin, data_bin, address, mode, data, storage);
-    }
-}
 
 int main() 
 {
@@ -70,15 +14,14 @@ int main()
         return -1;
     }
 
-    // initialize clock pin
-    gpio_init(CLOCK_PIN);
-    // set clock pin to input mode
-    gpio_set_dir(CLOCK_PIN, GPIO_IN);
-    // add clock interrupt
-    gpio_set_irq_enabled_with_callback(CLOCK_PIN, GPIO_IRQ_EDGE_RISE | GPIO_IRQ_EDGE_FALL, true, &handle_interrupt);
+    // slight delay for initialization
+    sleep_ms(1000);
+    cyw43_arch_gpio_put(CYW43_WL_GPIO_LED_PIN, 1);
 
     // initialize rom
     rom_init();
+    // initialize cmd
+    cmd_init();
 
     while(true) {
         tight_loop_contents();
