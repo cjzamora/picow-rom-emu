@@ -143,6 +143,20 @@ bool cmd_timer_callback(repeating_timer_t *t)
         return true;
     }
 
+    // if backspace
+    if ((ch == 0x08 || ch == 0x7F)) {
+        // if index is 0, do nothing
+        if (index == 0) {
+            printf(" ");
+            return true;
+        }
+
+        cmd_buffer[--index] = 0;
+        printf(" \b \b");
+
+        return true;
+    }
+
     // if character is newline or carriage return
     if (ch == '\n' || ch == '\r') {
         // execute command
