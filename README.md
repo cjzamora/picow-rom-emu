@@ -1,6 +1,6 @@
 # Raspberry PI Pico(W) - 6502 microprocessor ROM emulator
 
-This is a simple ROM emulator for the 6502 microprocessor using the Raspberry PI Pico. The emulator can be used to test the 6502 microprocessor without the need for a physical ROM/EEPROM chip. The emulator can be used to test the 6502 microprocessor with a clock frequency of up to 1kHz.
+This is a simple ROM emulator for the 6502 microprocessor using the Raspberry PI Pico. The emulator can be used to test the 6502 microprocessor without the need for a physical ROM/EEPROM chip. The emulator can be used to test the 6502 microprocessor with a clock frequency of up to 1Mhz.
 
 The entire 6502 build and examples is inspired by [Ben Eater's 6502 computer build](https://eater.net/6502)
 

@@ -3,6 +3,14 @@
 #include "bin.h"
 #include "rom.h"
 
+#ifndef ROM_STACK_START
+#define ROM_STACK_START 0x0000
+#endif
+
+#ifndef ROM_STACK_END
+#define ROM_STACK_END 0x07FF
+#endif
+
 /**
  * Clock pin
  * 
@@ -34,14 +42,6 @@ const int DATA_PINS[] = { 16, 17, 18, 19, 20, 21, 22, 26 };
  * @var int
  */
 const int READ_WRITE_PIN = 27;
-
-#ifndef ROM_STACK_START
-#define ROM_STACK_START 0x0000
-#endif
-
-#ifndef ROM_STACK_END
-#define ROM_STACK_END 0x07FF
-#endif
 
 /**
  * Rom stack start
