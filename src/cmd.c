@@ -77,7 +77,7 @@ void cmd_help()
     printf(
         "\n"
         "?\t\tshows this help\n"
-        "reboot\t\treboots the pico\n"
+        "reboot\t\treboots the pico to BOOTSEL mode\n"
         "clear\t\tclears the screen\n"
         "\n"
     );
@@ -107,6 +107,7 @@ void cmd_execute(char *cmd)
     if (strcmp(cmd, "?") == 0) {
         cmd_help();
     } else if (strcmp(cmd, "reboot") == 0) {
+        printf("* Rebooting to BOOTSEL mode\n");
         reset_usb_boot(0, 0);
     } else if (strcmp(cmd, "clear") == 0) {
         printf("\033[2J\033[1;1H");
