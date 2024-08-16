@@ -1,6 +1,14 @@
 #ifndef ROM_H
 #define ROM_H
 
+#ifndef ROM_STACK_START
+#define ROM_STACK_START 0x0000
+#endif
+
+#ifndef ROM_STACK_END
+#define ROM_STACK_END 0x07FF
+#endif
+
 /**
  * Rom stack start address
  * 

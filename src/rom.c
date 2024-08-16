@@ -3,14 +3,6 @@
 #include "bin.h"
 #include "rom.h"
 
-#ifndef ROM_STACK_START
-#define ROM_STACK_START 0x0000
-#endif
-
-#ifndef ROM_STACK_END
-#define ROM_STACK_END 0x07FF
-#endif
-
 /**
  * Clock pin
  * 
